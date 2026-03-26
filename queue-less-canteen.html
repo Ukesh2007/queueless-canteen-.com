@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Queue-Less Canteen</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#ff6b35;
+  --dark:#1a1a2e;
+  --light:#fff8f5;
+  --gray:#f5f5f5;
+  --text:#333;
+  --muted:#777;
+}
+body{font-family:'Nunito',sans-serif;color:var(--text);background:#fff;scroll-behavior:smooth}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:0 5%}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-size:1.3rem;font-weight:800;color:var(--primary);text-decoration:none}
+.logo span{color:var(--dark)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text);font-weight:600;font-size:.9rem;transition:.2s}
+.nav-links a:hover{color:var(--primary)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:var(--dark);border-radius:2px;transition:.3s}
+@media(max-width:640px){
+  .nav-links{display:none;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#fff;padding:20px 5%;box-shadow:0 8px 20px rgba(0,0,0,.08);gap:16px}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--dark) 0%,#16213e 100%);color:#fff;padding:90px 5%;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:88vh}
+.hero-text{max-width:520px}
+.hero-badge{display:inline-block;background:rgba(255,107,53,.2);color:var(--primary);font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:.5px;text-transform:uppercase}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1.2;margin-bottom:18px}
+.hero h1 span{color:var(--primary)}
+.hero p{font-size:1.05rem;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:32px}
+.btn{display:inline-block;background:var(--primary);color:#fff;padding:14px 32px;border-radius:50px;font-weight:700;font-size:1rem;text-decoration:none;transition:.25s;border:none;cursor:pointer}
+.btn:hover{background:#e55a28;transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,53,.4)}
+.btn-outline{background:transparent;border:2px solid rgba(255,255,255,.3);margin-left:12px;color:#fff}
+.btn-outline:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);box-shadow:none}
+.hero-img{font-size:9rem;flex-shrink:0;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@media(max-width:768px){.hero{flex-direction:column;text-align:center;padding:70px 5%}.hero-img{font-size:6rem}}
+
+/* SECTION BASE */
+section{padding:80px 5%}
+.section-label{text-align:center;font-size:.8rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.section-title{text-align:center;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;color:var(--dark);margin-bottom:50px}
+
+/* FEATURES */
+.features{background:var(--gray)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.card{background:#fff;border-radius:16px;padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:.25s}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.card-icon{font-size:2.6rem;margin-bottom:16px}
+.card h3{font-size:1.1rem;font-weight:800;color:var(--dark);margin-bottom:10px}
+.card p{font-size:.9rem;color:var(--muted);line-height:1.6}
+
+/* MENU */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.menu-card{border-radius:16px;overflow:hidden;border:1px solid #eee;transition:.25s}
+.menu-card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.1)}
+.menu-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--light)}
+.menu-info{padding:18px}
+.menu-info h4{font-size:1rem;font-weight:800;color:var(--dark);margin-bottom:4px}
+.menu-info p{font-size:.82rem;color:var(--muted);margin-bottom:14px}
+.menu-footer{display:flex;align-items:center;justify-content:space-between}
+.price{font-size:1.1rem;font-weight:800;color:var(--primary)}
+.btn-sm{background:var(--primary);color:#fff;border:none;padding:8px 18px;border-radius:50px;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif}
+.btn-sm:hover{background:#e55a28;transform:translateY(-1px)}
+
+/* HOW IT WORKS */
+.how{background:var(--dark);color:#fff}
+.how .section-title{color:#fff}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;position:relative}
+.step{text-align:center;padding:20px}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--primary);color:#fff;font-size:1.3rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.step h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+.step p{font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.6}
+
+/* FOOTER */
+footer{background:#111;color:rgba(255,255,255,.6);text-align:center;padding:32px 5%;font-size:.88rem}
+footer strong{color:var(--primary)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">🍽️ Queue<span>Less</span></a>
+    <ul class="nav-links" id="nav">
+      <li><a href="#">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#how">About</a></li>
+      <li><a href="#footer">Contact</a></li>
+    </ul>
+    <button class="hamburger" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge">🚀 Smart Canteen System</div>
+    <h1>Skip the Queue,<br/><span>Pre-Order</span> Your Meal</h1>
+    <p>Order your favourite food before you even arrive. No waiting, no stress — just pick up and enjoy.</p>
+    <a href="#menu" class="btn">View Menu</a>
+    <a href="#how" class="btn btn-outline">How It Works</a>
+  </div>
+  <div class="hero-img">🥘</div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Why Choose Us</div>
+  <div class="section-title">Everything Made Easier</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Fast Ordering</h3>
+      <p>Place your order in seconds with our simple, intuitive interface. No hassle, no confusion.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏰</div>
+      <h3>Save Time</h3>
+      <p>Stop wasting your lunch break in line. Pre-order ahead and reclaim your time.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>Easy Pickup</h3>
+      <p>Your meal is ready and waiting when you arrive. Just walk in and pick it up.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="section-label">Our Menu</div>
+  <div class="section-title">Today's Specials</div>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="menu-img">🍛</div>
+      <div class="menu-info">
+        <h4>Chicken Biryani</h4>
+        <p>Aromatic basmati rice with tender chicken & spices</p>
+        <div class="menu-footer">
+          <span class="price">₹80</span>
+          <button class="btn-sm">Order Now</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-img">🍜</div>
+      <div class="menu-info">
+        <h4>Veg Noodles</h4>
+        <p>Stir-fried noodles with fresh seasonal vegetables</p>
+        <div class="menu-footer">
+          <span class="price">₹55</span>
+          <button class="btn-sm">Order Now</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-img">🌯</div>
+      <div class="menu-info">
+        <h4>Paneer Wrap</h4>
+        <p>Grilled paneer with veggies wrapped in a soft tortilla</p>
+        <div class="menu-footer">
+          <span class="price">₹65</span>
+          <button class="btn-sm">Order Now</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-img">🥗</div>
+      <div class="menu-info">
+        <h4>Fresh Salad Bowl</h4>
+        <p>Crisp greens, chickpeas, and a tangy lemon dressing</p>
+        <div class="menu-footer">
+          <span class="price">₹45</span>
+          <button class="btn-sm">Order Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label" style="color:rgba(255,107,53,.8)">Simple Process</div>
+  <div class="section-title">How It Works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Browse the Menu</h4>
+      <p>Explore today's fresh menu items, check prices, and pick your favourites.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>Place Your Order</h4>
+      <p>Select your meal and confirm your order in just a few taps — no account needed.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>Pick Up & Enjoy</h4>
+      <p>Arrive at the canteen, collect your ready meal, and enjoy without any wait.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p>© 2025 <strong>Queue-Less Canteen</strong> · Built for smarter campuses · contact@queueless.in</p>
+</footer>
+
+</body>
+</html>
